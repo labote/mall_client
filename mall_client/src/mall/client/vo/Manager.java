@@ -1,4 +1,4 @@
-package mall_client.vo;
+package mall.client.vo;
 
 public class Manager {
 	private int managerNo;
