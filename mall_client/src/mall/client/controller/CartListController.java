@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import mall.client.model.CartDao;
+import mall.client.vo.*;
 
 @WebServlet("/CartListController")
 public class CartListController extends HttpServlet {
@@ -28,7 +29,7 @@ public class CartListController extends HttpServlet {
 		
 		// Dao호출
 		this.cartDao = new CartDao();
-		List<Map<String,Object>> cartList = this.cartDao.selectCartList();
+		List<Map<String,Object>> cartList = this.cartDao.selectCartList(((Client)(s.getAttribute("loginClient"))).getClientMail());
 		
 		// View forward
 		request.setAttribute("cartList", cartList);
