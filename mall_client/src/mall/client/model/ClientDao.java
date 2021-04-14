@@ -19,7 +19,6 @@ public class ClientDao {
 		int rowCnt = 0;
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		
 		try {
 			// DB 연결 및 SQL문 실행
@@ -32,7 +31,7 @@ public class ClientDao {
 		} catch (Exception e) { // 예외 처리
 			e.printStackTrace();
 		} finally { // 할당값 해제
-			this.dbUtil.close(rs, stmt, conn);
+			this.dbUtil.close(null, stmt, conn);
 		}
 		
 		return rowCnt;
