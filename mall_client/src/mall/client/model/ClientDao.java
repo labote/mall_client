@@ -11,6 +11,40 @@ public class ClientDao {
 	
 	private DBUtil dbUtil; // 객체 생성
 	
+	// 리스트 메서드
+	public Client selectClientOne(String clientMail) {
+		
+		// dbutil, rowCnt, conn, stmt 객체 초기화
+		this.dbUtil = new DBUtil();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		Client client = null;
+		
+		try {
+			// DB 연결 및 SQL문 실행
+			conn = dbUtil.getConnection();
+			String sql = "SELECT client_no clientNo, client_mail clientMail, date_format(client_date,'%Y-%m-%d') clientDate FROM client WHERE client_mail = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, clientMail);
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				client = new Client();
+				client.setClientNo(rs.getInt("clientNo"));
+				client.setClientMail(rs.getString("clientMail"));
+				client.setClientDate(rs.getString("clientDate"));
+			}
+		} catch (Exception e) { //  예외 처리
+			e.printStackTrace();
+		} finally { // 할당값 해제
+			dbUtil.close(rs, stmt, conn);
+		}
+		
+		return client;
+	}
+	
 	// 회원가입, insert 메서드
 	public int insertClient(Client client) {
 		
