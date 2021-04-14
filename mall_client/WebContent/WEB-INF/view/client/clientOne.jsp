@@ -32,5 +32,7 @@
 			</tr>
 		</tbody>
 	</table>
+	<a href="<%=request.getContextPath()%>/WithdrawController" class="btn">회원탈퇴</a>
+	<a href="<%=request.getContextPath()%>/UpdatePasswordController" class="btn">비밀번호 수정</a>
 </body>
 </html>
