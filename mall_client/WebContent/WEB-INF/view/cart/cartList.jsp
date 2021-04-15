@@ -23,6 +23,8 @@
 				<td>ebookNo</td>
 				<td>ebookTitle</td>
 				<td>cartDate</td>
+				<td>삭제</td>
+				<td>주문</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -35,6 +37,10 @@
 					<td><%=map.get("ebookNo")%></td>
 					<td><%=map.get("ebookTitle")%></td>
 					<td><%=map.get("cartDate")%></td>
+					<!-- DeleteCartController - CartDao.deleteCart() - redirect /CartListController-->
+					<td><a href="<%=request.getContextPath()%>/DeleteCartController?cartNo=<%=map.get("cartNo")%>">삭제</a></td>
+					<!-- insertOrdersController - insertOrders(), deleteCart():ISSUE 트랜잭션 처리 - redirect(cartList) -->
+					<td><a href="">주문</a></td>
 				</tr>
 			<%			
 				}

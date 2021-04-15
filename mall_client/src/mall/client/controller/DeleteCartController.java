@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import mall.client.model.ClientDao;
-import mall.client.vo.Client;
+import mall.client.model.CartDao;
+import mall.client.model.EbookDao;
+import mall.client.vo.Ebook;
 
-@WebServlet("/ClientOneController")
-public class ClientOneController extends HttpServlet {
-	private ClientDao clientDao;
+@WebServlet("/DeleteCartController")
+public class DeleteCartController extends HttpServlet {
+	CartDao cartDao;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -26,13 +27,16 @@ public class ClientOneController extends HttpServlet {
 				return;
 		}
 		
-		// Dao 호출
-		this.clientDao = new ClientDao();
-		Client clientOne = clientDao.selectClientOne(((Client)(session.getAttribute("loginClient"))).getClientMail());
+		// request 호출
+		request.setCharacterEncoding("UTF-8");
+		int cartNo = Integer.parseInt(request.getParameter("cartNo"));
+		System.out.println("cartNo : " + cartNo);
 		
-		// View forward
-		request.setAttribute("clientOne", clientOne);
-		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/view/client/clientOne.jsp");
-		rd.forward(request, response);
+		// model 호출
+		this.cartDao = new CartDao();
+		this.cartDao.deleteCart(cartNo);
+		
+		// redirect
+		response.sendRedirect(request.getContextPath()+"/CartListController");
 	}
 }

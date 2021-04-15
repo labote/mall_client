@@ -25,7 +25,7 @@ public class LoginController extends HttpServlet {
 			return;
 		}
 		
-		//
+		// request 호출
 		request.setCharacterEncoding("UTF-8");
 		String clientMail = request.getParameter("clientMail");
 		String clientPw = request.getParameter("clientPw");
@@ -39,6 +39,7 @@ public class LoginController extends HttpServlet {
 			s.setAttribute("loginClient", returnClient);
 		}
 		
+		// redirect
 		response.sendRedirect(request.getContextPath()+"/IndexController");
 	}
 

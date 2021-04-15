@@ -32,7 +32,10 @@
 			</tr>
 		</tbody>
 	</table>
-	<a href="<%=request.getContextPath()%>/WithdrawController" class="btn">회원탈퇴</a>
-	<a href="<%=request.getContextPath()%>/UpdatePasswordController" class="btn">비밀번호 수정</a>
+	<!-- UpdateClientPwController.doGet() - updateClientPw.jsp -->
+	<!-- UpdateClientPwController.doPost() - ClientDao.updateClientPw() - session.invalidate() - redirect: /IndexController -->
+	<a href="<%=request.getContextPath()%>/UpdateClientPwController" class="btn">비밀번호 수정</a>
+	<!-- DeleteClientController - CartDao.deleteCartByClient(mail), ClientDao.deleteClient(mail) - session.invalidate() - redirect: /IndexController -->
+	<a href="<%=request.getContextPath()%>/DeleteClientController" class="btn">회원탈퇴</a>
 </body>
 </html>

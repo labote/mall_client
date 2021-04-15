@@ -12,13 +12,15 @@ import javax.servlet.http.HttpSession;
 
 import mall.client.model.ClientDao;
 import mall.client.vo.Client;
+import mall.client.vo.Ebook;
 
-@WebServlet("/ClientOneController")
-public class ClientOneController extends HttpServlet {
-	private ClientDao clientDao;
+@WebServlet("/UpdateClientPwController")
+public class UpdateClientPwController extends HttpServlet {
 	
+	ClientDao clientDao;
+
+	// form
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		// 로그인 유효성 검사, redirect
 		HttpSession session = request.getSession();
 		if(session.getAttribute("loginClient") == null) {
@@ -32,7 +34,29 @@ public class ClientOneController extends HttpServlet {
 		
 		// View forward
 		request.setAttribute("clientOne", clientOne);
-		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/view/client/clientOne.jsp");
-		rd.forward(request, response);
+		request.getRequestDispatcher("/WEB-INF/view/client/updateClientPw.jsp").forward(request, response);
 	}
+
+	// action : C -> M -> redirect(indexController)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// request 호출
+		HttpSession session = request.getSession();
+		String newClientPw = request.getParameter("newClientPw");
+		System.out.println("newClientPw : " + newClientPw); // 디버깅
+		
+		// 전처리
+		Client client = new Client();
+		client.setClientPw(newClientPw);
+		client.setClientMail(((Client)(session.getAttribute("loginClient"))).getClientMail());
+		
+		// model 호출
+		this.clientDao = new ClientDao();
+		clientDao.updateClientPw(client);
+		
+		// redirect
+		session.invalidate();
+		response.sendRedirect(request.getContextPath()+"/IndexController");
+	}
+
 }

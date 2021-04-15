@@ -11,10 +11,54 @@ public class ClientDao {
 	
 	private DBUtil dbUtil; // 객체 생성
 	
+	// 비밀번호 변경 메서드
+	public void updateClientPw(Client client) {
+		// dbutil, rowCnt, conn, stmt 객체, flag 초기화
+		this.dbUtil = new DBUtil();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			// DB 연결 및 SQL문 실행
+			conn = this.dbUtil.getConnection();
+			String sql = "UPDATE client SET client_pw = PASSWORD(?) WHERE client_mail = ?";
+			stmt = conn.prepareStatement(sql);
+			System.out.println("stmt : " + stmt); // 디버깅
+			stmt.setString(1, client.getClientPw());
+			stmt.setString(2, client.getClientMail());
+			stmt.executeUpdate();		
+		} catch (Exception e) { // 예외 처리
+			e.printStackTrace();
+		} finally { // 할당값 해제
+			this.dbUtil.close(null, stmt, conn);
+		}
+	}
+	
+	// 클라이언트 삭제 메서드
+	public void deleteCartByClient(String clientMail) {
+		
+		// dbutil, rowCnt, conn, stmt 객체 초기화
+		this.dbUtil = new DBUtil();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		try {
+			// DB 연결 및 SQL문 실행
+			conn = this.dbUtil.getConnection();
+			String sql = "DELETE FROM client where client_mail = ?";
+			stmt = conn.prepareStatement(sql);
+			System.out.println("stmt : " + stmt); // 디버깅
+			stmt.setString(1, clientMail);
+			stmt.executeUpdate();		
+		} catch (Exception e) { // 예외 처리
+			e.printStackTrace();
+		} finally { // 할당값 해제
+			this.dbUtil.close(null, stmt, conn);
+		}
+	}
+	
 	// 리스트 메서드
 	public Client selectClientOne(String clientMail) {
 		
-		// dbutil, rowCnt, conn, stmt 객체 초기화
+		// dbutil, Client, conn, stmt 객체 초기화
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -27,6 +71,7 @@ public class ClientDao {
 			conn = dbUtil.getConnection();
 			String sql = "SELECT client_no clientNo, client_mail clientMail, date_format(client_date,'%Y-%m-%d') clientDate FROM client WHERE client_mail = ?";
 			stmt = conn.prepareStatement(sql);
+			System.out.println("stmt : " + stmt); // 디버깅
 			stmt.setString(1, clientMail);
 			rs = stmt.executeQuery();
 			
@@ -59,6 +104,7 @@ public class ClientDao {
 			conn = this.dbUtil.getConnection();
 			String sql = "INSERT INTO client(client_mail, client_pw, client_date) VALUES(?,PASSWORD(?),now())";
 			stmt = conn.prepareStatement(sql);
+			System.out.println("stmt : " + stmt); // 디버깅
 			stmt.setString(1, client.getClientMail());
 			stmt.setString(2, client.getClientPw());
 			stmt.executeUpdate();
@@ -81,12 +127,12 @@ public class ClientDao {
 		ResultSet rs = null;
 		String returnClientMail = null;
 		
-		
 		try {
 			// DB 연결 및 SQL문 실행
 			conn = this.dbUtil.getConnection();
 			String sql = "SELECT client_mail FROM client WHERE client_mail = ?";
 			stmt = conn.prepareStatement(sql);
+			System.out.println("stmt : " + stmt); // 디버깅
 			stmt.setString(1, clientMail);
 			rs = stmt.executeQuery();
 			

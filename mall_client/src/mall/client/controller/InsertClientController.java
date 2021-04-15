@@ -20,7 +20,7 @@ public class InsertClientController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		if(session.getAttribute("loginClient") != null) {
-			response.sendRedirect("/IndexController");
+			response.sendRedirect(request.getContextPath()+"/IndexController");
 			return;
 		}
 		request.getRequestDispatcher("/WEB-INF/view/client/insertClient.jsp").forward(request, response);
@@ -37,6 +37,7 @@ public class InsertClientController extends HttpServlet {
 			response.sendRedirect(request.getContextPath()+"/InsertClientController");
 			return;
 		}
+		
 		// 2. 회원가입, 파라미터 값
 		request.setCharacterEncoding("UTF-8");
 		String clientMail = request.getParameter("clientMail");
