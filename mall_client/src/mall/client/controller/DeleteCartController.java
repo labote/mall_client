@@ -19,6 +19,7 @@ public class DeleteCartController extends HttpServlet {
 	CartDao cartDao;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		
 		// 로그인 유효성 검사, redirect
 		HttpSession session = request.getSession();
@@ -28,9 +29,8 @@ public class DeleteCartController extends HttpServlet {
 		}
 		
 		// request 호출
-		request.setCharacterEncoding("UTF-8");
 		int cartNo = Integer.parseInt(request.getParameter("cartNo"));
-		System.out.println("cartNo : " + cartNo);
+		System.out.println("cartNo : " + cartNo); // 디버깅
 		
 		// model 호출
 		this.cartDao = new CartDao();

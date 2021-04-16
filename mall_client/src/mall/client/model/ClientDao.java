@@ -160,7 +160,7 @@ public class ClientDao {
 		
 		try {
 			conn = this.dbUtil.getConnection();
-			String sql = "SELECT client_mail clientMail FROM client WHERE client_mail=? AND client_pw=PASSWORD(?)";
+			String sql = "SELECT client_no clientNo, client_mail clientMail FROM client WHERE client_mail=? AND client_pw=PASSWORD(?)";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, client.getClientMail());
 			stmt.setString(2, client.getClientPw());
@@ -168,6 +168,7 @@ public class ClientDao {
 			
 			while(rs.next()) {
 				returnClient = new Client();
+				returnClient.setClientNo(rs.getInt("clientNo"));
 				returnClient.setClientMail(rs.getString("clientMail"));
 			}
 		} catch (Exception e) {

@@ -15,16 +15,17 @@ import mall.client.vo.Client;
 @WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
 	private ClientDao clientDao;
-	
+
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// 로그인 유효성 검사
 		HttpSession s = request.getSession();
-		if(s.getAttribute("loginClient") != null) {
-			response.sendRedirect(request.getContextPath()+"/IndexController");
+		if (s.getAttribute("loginClient") != null) {
+			response.sendRedirect(request.getContextPath() + "/IndexController");
 			return;
 		}
-		
+
 		// request 호출
 		request.setCharacterEncoding("UTF-8");
 		String clientMail = request.getParameter("clientMail");
@@ -32,15 +33,15 @@ public class LoginController extends HttpServlet {
 		Client client = new Client();
 		client.setClientMail(clientMail);
 		client.setClientPw(clientPw);
-		
+
 		this.clientDao = new ClientDao();
 		Client returnClient = this.clientDao.login(client);
-		if(returnClient != null) {
+		if (returnClient != null) {
 			s.setAttribute("loginClient", returnClient);
 		}
-		
+
 		// redirect
-		response.sendRedirect(request.getContextPath()+"/IndexController");
+		response.sendRedirect(request.getContextPath() + "/IndexController");
 	}
 
 }
