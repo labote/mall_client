@@ -17,7 +17,7 @@ public class CartDao {
 	
 	// 장바구니 목록 전체 제거
 	public void deleteCartByClient(String clientMail) {
-		// dbutil, rowCnt, conn, stmt 객체, flag 초기화
+		// DBUtil, Connection, PreparedStatement, ResultSet 객체 생성
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -38,7 +38,7 @@ public class CartDao {
 	
 	// 장바구니 목록 제거
 	public void deleteCart(int cartNo) {
-		// dbutil, rowCnt, conn, stmt 객체, flag 초기화
+		// dbutil, rowCnt, conn, stmt 객체 생성 및 초기화
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -91,7 +91,7 @@ public class CartDao {
 	// Cart insert 메서드
 	public int insertCart(Cart cart) {
 			
-		// dbutil, rowCnt, conn, stmt 객체 초기화
+		// DBUtil, Connection, PreparedStatement, rowCnt 객체 생성 및 초기화
 		
 		this.dbUtil = new DBUtil();
 		int rowCnt = 0;
@@ -118,7 +118,6 @@ public class CartDao {
 	}
 	
 	public List<Map<String,Object>> selectCartList(String clientMail) {
-		List<Map<String,Object>> list = new ArrayList<>();
 		/*
 		 *  SELECT 
 		 * 		c.cart_no, 
@@ -129,6 +128,8 @@ public class CartDao {
 			ON c.ebook_no = e.ebook_no
 		 * 
 		 */
+		// List, DBUtil, Connection, PreparedStatement, ResultSet 객체 생성
+		List<Map<String,Object>> list = new ArrayList<>();
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -153,8 +154,8 @@ public class CartDao {
 			} 
 		} catch (Exception e) { // 예외 처리
 			e.printStackTrace();
-		} finally {
-			//this.dbUtil.close(rs, stmt, conn);
+		} finally { // 할당 해제
+			this.dbUtil.close(rs, stmt, conn);
 		}
 		
 		return list;

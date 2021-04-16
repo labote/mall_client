@@ -13,10 +13,66 @@ public class EbookDao {
 	
 	private DBUtil dbUtil;
 	
+	// 전체 행의 개수 구하는 메서드
+	public int totalCount(String searchTitle, String categoryName) {
+		// DBUtil, Connection, PreparedStatement, ResultSet, rowCnt 객체 생성 및 초기화
+		this.dbUtil = new DBUtil();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int rowCnt = 0;
+		
+		try {
+			// DB 연결 및 SQL문 실행
+			conn = this.dbUtil.getConnection();
+			String sql = "";
+			
+			if(searchTitle.equals("") && categoryName.equals("")) {
+				sql = "SELECT count(*) cnt FROM ebook";
+				stmt = conn.prepareStatement(sql);
+			}
+			else if(searchTitle.equals("") && !categoryName.equals("")) {
+				sql = "SELECT count(*) cnt FROM ebook WHERE category_name like ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+categoryName+"%");
+				
+			}
+			else if(!searchTitle.equals("") && categoryName.equals("")) {
+				sql = "SELECT count(*) cnt FROM ebook WHERE ebook_title like ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+searchTitle+"%");
+			}
+			else if(!searchTitle.equals("") && !categoryName.equals("")) {
+				sql = "SELECT count(*) cnt FROM ebook WHERE ebook_title like ? AND category_name like ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+searchTitle+"%");
+				stmt.setString(2, "%"+categoryName+"%");
+			}
+			
+			/*
+			 * if(searchTitle.equals("")) { sql = "SELECT count(*) cnt FROM ebook"; stmt =
+			 * conn.prepareStatement(sql); } else { sql =
+			 * "SELECT count(*) cnt FROM ebook WHERE ebook_title like ?"; stmt =
+			 * conn.prepareStatement(sql); stmt.setString(1, "%"+searchTitle+"%"); }
+			 */
+			System.out.println("stmt(totalCount) : " + stmt); // 디버깅
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				rowCnt = rs.getInt("cnt");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			this.dbUtil.close(rs, stmt, conn);
+		}
+		return rowCnt;
+	}
+	
 	// Ebook 정보 가져오는 메서드, EbookOne
 	public Ebook selectEbookOne(int ebookNo) {
 		
-		// Ebook, dbUtil, Connection, PreparedStatement, ResultSet 객체 생성
+		// Ebook, DBUtil, Connection, PreparedStatement, ResultSet 객체 생성
 		this.dbUtil = new DBUtil();
 		Ebook ebook = null;
 		Connection conn = null;
@@ -56,23 +112,48 @@ public class EbookDao {
 		return ebook;
 	}
 	
-	public List<Ebook> selectEbookListByPage(int beginRow, int rowPerPage){
+	public List<Ebook> selectEbookListByPage(int beginRow, int rowPerPage, String searchTitle, String categoryName){
 		
-		// List, dbUtil, Connection, PreparedStatement, ResultSet 객체 생성
+		// List, DBUtil, Connection, PreparedStatement, ResultSet 객체 생성
 		List<Ebook> list = new ArrayList<Ebook>();
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		
 		try {
 			// DB 연결 및 SQL문 실행
 			conn = this.dbUtil.getConnection();
-			String sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, ebook_price ebookPrice FROM ebook ORDER BY ebook_date DESC LIMIT ?, ?";
-			stmt = conn.prepareStatement(sql);
+			String sql = "";
+			if(searchTitle.equals("") && categoryName.equals("")) {
+				sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, ebook_price ebookPrice FROM ebook ORDER BY ebook_date DESC LIMIT ?, ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setInt(1, beginRow);
+				stmt.setInt(2, rowPerPage);
+			} else if(searchTitle.equals("") && !categoryName.equals("")){
+				sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, ebook_price ebookPrice FROM ebook WHERE category_name like ? ORDER BY ebook_date DESC LIMIT ?, ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, categoryName);
+				stmt.setInt(2, beginRow);
+				stmt.setInt(3, rowPerPage);
+			} else if(!searchTitle.equals("") && categoryName.equals("")) {
+				sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, ebook_price ebookPrice FROM ebook WHERE ebook_title like ? ORDER BY ebook_date DESC LIMIT ?, ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+searchTitle+"%");
+				stmt.setInt(2, beginRow);
+				stmt.setInt(3, rowPerPage);
+			} else if(!searchTitle.equals("") && !categoryName.equals("")) {
+				sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, ebook_price ebookPrice FROM ebook WHERE ebook_title like ? AND category_name like ? ORDER BY ebook_date DESC LIMIT ?, ?";
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+searchTitle+"%");
+				stmt.setString(2, categoryName);
+				stmt.setInt(3, beginRow);
+				stmt.setInt(4, rowPerPage);
+			}
+			
 			System.out.println("stmt : " + stmt); // 디버깅
-			stmt.setInt(1, beginRow);
-			stmt.setInt(2, rowPerPage);
 			rs = stmt.executeQuery();
+			
 			while(rs.next()) {
 				Ebook ebook = new Ebook();
 				ebook.setEbookNo(rs.getInt("ebookNo"));

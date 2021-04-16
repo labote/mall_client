@@ -21,12 +21,27 @@ public class EbookOneController extends HttpServlet {
 		// request 호출
 		int ebookNo = Integer.parseInt(request.getParameter("ebookNo"));
 		
+		int currentPage = 1;
+		if(request.getParameter("currentPage") != null) { // 현재페이지를 받아온다.
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		int rowPerPage = 15;
+		if(request.getParameter("rowPerPage") != null) { // rowPerPage가 존재한다면 받아온다.
+			rowPerPage = Integer.parseInt(request.getParameter("rowPerPage"));
+		}
+		
+		System.out.println("currentPage : " + currentPage);
+		System.out.println("rowPerPage : " + rowPerPage);
+		
 		// model 호출
 		this.ebookDao = new EbookDao();
 		Ebook ebookOne = this.ebookDao.selectEbookOne(ebookNo);
 		
 		// View forward
 		request.setAttribute("ebookOne", ebookOne);
+		request.setAttribute("currentPage", currentPage);
+		request.setAttribute("rowPerPage", rowPerPage);
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/view/ebook/ebookOne.jsp");
 		rd.forward(request, response);
 	}

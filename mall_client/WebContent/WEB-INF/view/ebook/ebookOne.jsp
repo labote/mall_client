@@ -13,7 +13,14 @@
 	
 	<!-- clientOne -->
 	<%
+		// 값들을 가져온다.
 		Ebook ebook = (Ebook)(request.getAttribute("ebookOne"));
+		int currentPage = (Integer)request.getAttribute("currentPage");
+		int rowPerPage = (Integer)request.getAttribute("rowPerPage");
+		
+		// 디버깅
+		System.out.println("currentPage : " + currentPage);
+		System.out.println("rowPerPage : " + rowPerPage);
 	%>
 	
 	<table border="1">
@@ -78,7 +85,7 @@
 			}
 		%>
 		</a>
-		<a href="<%=request.getContextPath()%>/IndexController">뒤로 가기</a>
+		<a href="<%=request.getContextPath()%>/IndexController?rowPerPage=<%=rowPerPage%>&currentPage=<%=currentPage%>">뒤로 가기</a>
 		<!-- <button type="button" onclick="history.back()" class="float-right">Cancel</button> -->
 		<!-- <a href="javascript:window.history.back();"><button type="button">뒤로가기</button></a> -->
 		<!-- <button type="button" onclick="history.back()" class="btn btn-primary btn-sm float-right">Cancel</button> -->
