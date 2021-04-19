@@ -2,6 +2,7 @@ package mall.client.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import mall.client.model.CategoryDao;
 import mall.client.model.EbookDao;
+import mall.client.model.OrdersDao;
 import mall.client.vo.Ebook;
 
 // C -> M -> V
@@ -19,6 +21,7 @@ import mall.client.vo.Ebook;
 public class IndexController extends HttpServlet {
 	private EbookDao ebookDao;
 	private CategoryDao categoryDao;
+	private OrdersDao ordersDao;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -53,14 +56,17 @@ public class IndexController extends HttpServlet {
 		// model 호출
 		this.ebookDao = new EbookDao();
 		this.categoryDao = new CategoryDao();
-		List<Ebook> ebookList = this.ebookDao.selectEbookListByPage(beginRow, rowPerPage, searchTitle, categoryName);
+		this.ordersDao = new OrdersDao();
+		List<Ebook> ebookList = this.ebookDao.selectEbookListByPage(beginRow, rowPerPage, searchTitle, categoryName); // 전체 ebook
 		List<String> categoryNameList = this.categoryDao.categoryNameList();
+		List<Map<String,Object>> bestOrdersList = this.ordersDao.selectBestOrdersList(); // best ebook
 		int totalRow = ebookDao.totalCount(searchTitle, categoryName);
 		System.out.println("totalRow : " + totalRow);
 		
 		// View forward
 		request.setAttribute("ebookList", ebookList);
 		request.setAttribute("categoryNameList", categoryNameList);
+		request.setAttribute("bestOrdersList", bestOrdersList);
 		request.setAttribute("rowPerPage", rowPerPage);
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("totalRow", totalRow);

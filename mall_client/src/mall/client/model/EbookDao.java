@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mall.client.commons.DBUtil;
 import mall.client.vo.Ebook;
@@ -12,6 +14,40 @@ import mall.client.vo.Ebook;
 public class EbookDao {
 	
 	private DBUtil dbUtil;
+	
+	// 달마다 나온 신간 목록
+	public List<Map<String, Object>> selectEbookListByMonth(int year, int month){
+		// List, DBUtil, Connection, PreparedStatement, ResultSet 객체 생성
+		List<Map<String, Object>> list = new ArrayList<>();
+		this.dbUtil = new DBUtil();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			// DB 연결 및 SQL문 실행
+			conn = this.dbUtil.getConnection();
+			String sql = "SELECT ebook_no ebookNo, ebook_title ebookTitle, day(ebook_date) d FROM ebook WHERE YEAR(ebook_date) = ? AND MONTH(ebook_date) = ? ORDER BY day(ebook_date) ASC";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, year);
+			stmt.setInt(2, month);
+			System.out.println("stmt : " + stmt); // 디버깅
+			rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				Map<String,Object> map = new HashMap<>();
+				map.put("ebookNo", rs.getInt("ebookNo"));
+				map.put("ebookTitle", rs.getString("ebookTitle"));
+				map.put("d", rs.getInt("d"));
+				list.add(map);
+			}
+		} catch(Exception e) { // 예외 처리
+			e.printStackTrace();
+		} finally { // 할당 해제
+			this.dbUtil.close(rs, stmt, conn);
+		}
+		return list;
+	}
 	
 	// 전체 행의 개수 구하는 메서드
 	public int totalCount(String searchTitle, String categoryName) {

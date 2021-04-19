@@ -13,6 +13,7 @@
 		// 값들을 가져온다
 		List<Ebook> ebookList = (List<Ebook>)(request.getAttribute("ebookList"));
 		List<String> categoryNameList = (List)(request.getAttribute("categoryNameList"));
+		List<Map<String,Object>> bestOrdersList = (List<Map<String,Object>>)(request.getAttribute("bestOrdersList"));
 		int currentPage = (Integer)request.getAttribute("currentPage");
 		int rowPerPage = (Integer)request.getAttribute("rowPerPage");
 		int totalRow = (Integer)request.getAttribute("totalRow");
@@ -66,6 +67,26 @@
 		</select>
 		<button type="submit">보기</button>
 	</form>
+	<!-- best ebook 상품 출력 -->
+	<h3>Best ebook</h3>
+	<table border="1">
+		<tr>
+			<%
+				for(Map m : bestOrdersList){
+			%>
+					<td>
+						<div><img src="<%=request.getContextPath()%>/img/default.jpg"></div>
+						<!-- EbookOneController - EbookDao.selectEbookOne() - ebookOne.jsp -->
+						<div><a href="<%=request.getContextPath()%>/EbookOneController?ebookNo=<%=m.get("ebookNo")%>&currentPage=<%=currentPage%>&rowPerPage=<%=rowPerPage%>"><%=m.get("ebookTitle")%></a></div>
+						<div>￦<%=m.get("ebookPrice")%></div>
+					</td>
+			<%		
+				}
+			%>
+		</tr>
+	</table>
+	<!-- ebook 상품 출력 -->
+	<h3>Ebook List</h3>
  	<table border="1">
 		<tr>
 			<%
