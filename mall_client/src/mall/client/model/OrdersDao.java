@@ -50,7 +50,7 @@ public class OrdersDao {
 	}
 	
 	// 전체 행의 개수 구하는 메서드
-	public int totalCount(String searchTitle) {
+	public int totalCount(int clientNo, String searchTitle) {
 		// DBUtil, Connection, PreparedStatement, ResultSet, rowCnt 객체 생성 및 초기화
 		this.dbUtil = new DBUtil();
 		Connection conn = null;
@@ -63,12 +63,14 @@ public class OrdersDao {
 			conn = this.dbUtil.getConnection();
 			String sql = "";
 			if(searchTitle.equals("")) {
-				sql = "SELECT count(*) cnt FROM orders";
+				sql = "SELECT count(*) cnt FROM orders WHERE client_no = ?";
 				stmt = conn.prepareStatement(sql);
+				stmt.setInt(1, clientNo);
 			} else {
-				sql = "SELECT count(*) cnt FROM orders WHERE ebook_title like ?";
+				sql = "SELECT count(*) cnt FROM orders INNER JOIN ebook e ON o.ebook_no = e.ebook_no WHERE client_no = ? AND e.ebook_title like ?";
 				stmt = conn.prepareStatement(sql);
-				stmt.setString(1, "%"+searchTitle+"%");
+				stmt.setInt(1, clientNo);
+				stmt.setString(2, "%"+searchTitle+"%");
 			}
 			System.out.println("stmt(totalCount) : " + stmt); // 디버깅
 			rs = stmt.executeQuery();
@@ -104,7 +106,7 @@ public class OrdersDao {
 				stmt.setInt(2, beginRow);
 				stmt.setInt(3, rowPerPage);
 			} else {
-				sql = "SELECT o.orders_no ordersNo, o.ebook_no ebookNo, o.orders_date ordersDate, o.orders_state ordersState, e.ebook_title ebookTitle, e.ebook_price ebookPrice FROM orders o INNER JOIN ebook e ON o.ebook_no = e.ebook_no WHERE o.client_no = ? AND ebook_title like ? ORDER BY o.orders_date DESC LIMIT ?,?";
+				sql = "SELECT o.orders_no ordersNo, o.ebook_no ebookNo, o.orders_date ordersDate, o.orders_state ordersState, e.ebook_title ebookTitle, e.ebook_price ebookPrice FROM orders o INNER JOIN ebook e ON o.ebook_no = e.ebook_no WHERE o.client_no = ? AND e.ebook_title like ? ORDER BY o.orders_date DESC LIMIT ?,?";
 				stmt = conn.prepareStatement(sql);
 				stmt.setInt(1, clientNo);
 				stmt.setString(2, "%"+searchTitle+"%");

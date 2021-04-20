@@ -54,13 +54,34 @@ public class EbookCalendarController extends HttpServlet {
 		System.out.println("firstDayOfWeek : " + firstDay.get(Calendar.DAY_OF_WEEK));
 		
 		List<Map<String, Object>> ebookListByMonth = this.ebookDao.selectEbookListByMonth(currentYear, currentMonth);
-	
+		int preYear = currentYear;
+		int preMonth = currentMonth - 1;
+		
+		// preMonth가 0이면 이전 년도
+		if(preMonth == 0){
+			preMonth = 12;
+			preYear -= 1;
+		}
+		
+		// preMonth가 1이면 다음 년도
+		int nextYear = currentYear;
+		int nextMonth = currentMonth + 1;
+
+		if(nextMonth == 13){
+			nextMonth = 1;
+			nextYear += 1;
+		}
+		
 		// View forward
 		request.setAttribute("ebookListByMonth", ebookListByMonth);
 		request.setAttribute("currentYear", currentYear);
 		request.setAttribute("currentMonth", currentMonth);
 		request.setAttribute("endDay", endDay);
 		request.setAttribute("firstDayOfWeek", firstDayOfWeek);
+		request.setAttribute("preYear", preYear);
+		request.setAttribute("preMonth", preMonth);
+		request.setAttribute("nextYear", nextYear);
+		request.setAttribute("nextMonth", nextMonth);
 		request.getRequestDispatcher("/WEB-INF/view/ebook/ebookCalendar.jsp").forward(request, response);
 		 
 	}

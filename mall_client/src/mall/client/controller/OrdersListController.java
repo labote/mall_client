@@ -60,8 +60,10 @@ public class OrdersListController extends HttpServlet {
 		// Dao 메서드 호출
 		Client client = (Client)session.getAttribute("loginClient");
 		List<Map<String, Object>> ordersList = this.ordersDao.selectOrdersListByClient(client.getClientNo(), beginRow, rowPerPage, searchTitle);
-		int totalRow = ordersDao.totalCount(searchTitle);
+		int totalRow = ordersDao.totalCount(client.getClientNo(), searchTitle);
+		int lastPage = totalRow/rowPerPage;
 		System.out.println("totalRow : " + totalRow);
+		System.out.println("lastPage : " + lastPage);
 		
 		// View forward
 		request.setAttribute("ordersList", ordersList);
@@ -69,6 +71,7 @@ public class OrdersListController extends HttpServlet {
 		request.setAttribute("rowPerPage", rowPerPage);
 		request.setAttribute("totalRow", totalRow);
 		request.setAttribute("searchTitle", searchTitle);
+		request.setAttribute("lastPage", lastPage);
 		request.getRequestDispatcher("/WEB-INF/view/orders/ordersList.jsp").forward(request,response);
 	}
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,46 +12,13 @@
 	<jsp:include page="/WEB-INF/view/inc/mainMenu.jsp"></jsp:include>
 	
 	<h1>Ebook Calendar</h1>
-	
-	<%
-		// request 호출
-		List<Map<String,Object>> ebookListByMonth = (List<Map<String,Object>>)request.getAttribute("ebookListByMonth");
-		int currentYear = (Integer)request.getAttribute("currentYear");
-		int currentMonth = (Integer)request.getAttribute("currentMonth");
-		int endDay = (Integer)request.getAttribute("endDay");
-		int firstDayOfWeek = (Integer)request.getAttribute("firstDayOfWeek");
-		
-		// 디버깅
-		System.out.println("currentYear : " + currentYear);
-		System.out.println("currentMonth : " + currentMonth);
-		System.out.println("endDay : " + endDay);
-		System.out.println("firstDayOfWeek : " + firstDayOfWeek);
-		
-		int preYear = currentYear;
-		int preMonth = currentMonth - 1;
-		
-		// preMonth가 0이면 이전 년도
-		if(preMonth == 0){
-			preMonth = 12;
-			preYear -= 1;
-		}
-		
-		// preMonth가 1이면 다음 년도
-		int nextYear = currentYear;
-		int nextMonth = currentMonth + 1;
 
-		if(nextMonth == 13){
-			nextMonth = 1;
-			nextYear += 1;
-		}
-	%>
-	
 	<!-- n행 7열 -->
 	<div>
-		<a href="<%=request.getContextPath()%>/EbookCalendarController?currentYear=<%=preYear%>&currentMonth=<%=preMonth%>"><button>이전 달</button></a>
-		<span><%=currentYear%>년</span>
-		<span><%=currentMonth%>월</span>
-		<a href="<%=request.getContextPath()%>/EbookCalendarController?currentYear=<%=nextYear%>&currentMonth=<%=nextMonth%>"><button>다음 달</button></a>
+		<a href="${pageContext.request.contextPath}/EbookCalendarController?currentYear=${preYear}&currentMonth=${preMonth}"><button>이전 달</button></a>
+		<span>${currentYear}년</span>
+		<span>${currentMonth}월</span>
+		<a href="${pageContext.request.contextPath}/EbookCalendarController?currentYear=${nextYear}&currentMonth=${nextMonth}"><button>다음 달</button></a>
 	</div>
 	<table border="1">
 		<tr>
@@ -64,61 +31,44 @@
 			<th>토</th>
 		</tr>
 		<tr>
-			<%
-				for(int i=1; i<firstDayOfWeek; i++){
-			%>
-					<td></td>
-			<%
-				}
-				for(int i=1; i<=endDay; i++){
-			%>            
+			<!-- (공백 + endDay)만큼 td가 필요 -->
+			<c:forEach begin="1" end="${endDay+firstDayOfWeek-1}" step="1" var="i">
+				<c:if test="${(i-firstDayOfWeek+1) <= 0}">
+					<td>&nbsp;</td>
+				</c:if>
+				
+				<c:if test="${(i-firstDayOfWeek+1) > 0}">
 					<td>
-						<%=i%> <!-- 날짜 -->
-						<%
-							for(Map m : ebookListByMonth) {
-								// 날짜가 동일하다면 해당 날짜의 신간 출력
-								if(i == (Integer)m.get("d")) {
-						%>
+						<div>${i-firstDayOfWeek+1}</div>
+						<div>
+							<c:forEach var="m" items="${ebookListByMonth}">
+								<c:if test="${(i-firstDayOfWeek+1) == m.d}">
 									<div>
-										<a href="<%=request.getContextPath()%>/EbookOneController?ebookNo=<%=m.get("ebookNo")%>">
-										<%
-											String ebookTitle = (String)m.get("ebookTitle");
-											if(ebookTitle.length()>10){
-										%>
-												<%=ebookTitle.substring(0,11)%>
-										<%
-											} else {
-										%>
-												<%=ebookTitle%>
-										<%		
-											}
-										%>
+										<a href="${pageContext.request.contextPath}/EbookOneController?ebookNo=${m.ebookNo}">
+											<c:if test="${m.ebookTitle.length()>10}">
+												${m.ebookTitle.substring(0,10)}...
+											</c:if>
+											<c:if test="${m.ebookTitle.length()<=10}">
+												${m.ebookTitle}
+											</c:if>
 										</a>
 									</div>
-						<%
-								}
-							}
-						%>
+								</c:if>
+							</c:forEach>
+						</div>
 					</td>
-			<%
-					if(firstDayOfWeek%7==0){
-			%>               
-						</tr><tr>
-			<%               
-					}
-					firstDayOfWeek += 1;
-				}
-				firstDayOfWeek -= 1;
-				if((firstDayOfWeek%7) != 0){
-					for(int i=1; i<=7-(firstDayOfWeek%7); i++){
-			%>               
-			            <td></td>
-			<%               
-			        }
-			    }
-			%>
-
-	
+				</c:if>
+				
+				<c:if test="${i%7 == 0}">
+					</tr><tr>
+				</c:if>
+			</c:forEach>
+			<!-- 남은 자리를 td로 채운다 -->
+			<c:if test="${(endDay+firstDayOfWeek-1)%7 != 0}">
+				<c:forEach begin="1" end="${7-((endDay+firstDayOfWeek-1)%7)}" step="1" var="i">
+					<td>&nbsp;</td>
+				</c:forEach>
+			</c:if>
 		</tr>
 	</table>
 </body>

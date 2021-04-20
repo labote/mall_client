@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +12,6 @@
 	<jsp:include page="/WEB-INF/view/inc/mainMenu.jsp"></jsp:include>
 	
 	<!-- cartList -->
-	<%
-		List<Map<String,Object>> cartList = (List<Map<String,Object>>)(request.getAttribute("cartList"));
-	%>
 	<table border="1">
 		<thead>
 			<tr>
@@ -28,22 +24,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			<%
-				for(Map<String,Object> map : cartList){
-			%>
+			<c:forEach var="m" items="${cartList}">
 				<tr>
-					<td><%=map.get("cartNo")%></td>
-					<td><%=map.get("ebookNo")%></td>
-					<td><%=map.get("ebookTitle")%></td>
-					<td><%=map.get("cartDate")%></td>
+					<td>${m.cartNo}</td>
+					<td>${m.ebookNo}</td>
+					<td>${m.ebookTitle}</td>
+					<td>${m.cartDate}</td>
 					<!-- DeleteCartController - CartDao.deleteCart() - redirect /CartListController-->
-					<td><a href="<%=request.getContextPath()%>/DeleteCartController?cartNo=<%=map.get("cartNo")%>">삭제</a></td>
+					<td><a href="${pageContext.request.contextPath}/DeleteCartController?cartNo=${m.cartNo}">삭제</a></td>
 					<!-- InsertOrdersController - insertOrders(), deleteCart():ISSUE 트랜잭션 처리 - redirect(cartList) -->
-					<td><a href="<%=request.getContextPath()%>/InsertOrdersController?ebookNo=<%=map.get("ebookNo")%>&cartNo=<%=map.get("cartNo")%>">주문</a></td>
+					<td><a href="${pageContext.request.contextPath}/InsertOrdersController?ebookNo=${m.ebookNo}&cartNo=${m.cartNo}">주문</a></td>
 				</tr>
-			<%			
-				}
-			%>
+			</c:forEach>
 		</tbody>
 	</table>
 </body>

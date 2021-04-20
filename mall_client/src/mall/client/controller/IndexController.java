@@ -61,7 +61,9 @@ public class IndexController extends HttpServlet {
 		List<String> categoryNameList = this.categoryDao.categoryNameList();
 		List<Map<String,Object>> bestOrdersList = this.ordersDao.selectBestOrdersList(); // best ebook
 		int totalRow = ebookDao.totalCount(searchTitle, categoryName);
+		int lastPage = totalRow/rowPerPage;
 		System.out.println("totalRow : " + totalRow);
+		System.out.println("lastPage : " + lastPage);
 		
 		// View forward
 		request.setAttribute("ebookList", ebookList);
@@ -72,6 +74,7 @@ public class IndexController extends HttpServlet {
 		request.setAttribute("totalRow", totalRow);
 		request.setAttribute("searchTitle", searchTitle);
 		request.setAttribute("categoryName", categoryName);
+		request.setAttribute("lastPage", lastPage);
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/view/index.jsp");
 		rd.forward(request, response);
 	}
