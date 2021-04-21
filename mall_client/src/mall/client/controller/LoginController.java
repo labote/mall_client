@@ -14,6 +14,7 @@ import mall.client.vo.Client;
 
 @WebServlet("/LoginController")
 public class LoginController extends HttpServlet {
+	
 	private ClientDao clientDao;
 
 	@Override
@@ -27,7 +28,6 @@ public class LoginController extends HttpServlet {
 		}
 
 		// request 호출
-		request.setCharacterEncoding("UTF-8");
 		String clientMail = request.getParameter("clientMail");
 		String clientPw = request.getParameter("clientPw");
 		Client client = new Client();

@@ -9,6 +9,12 @@
 </head>
 <body>
 	<jsp:include page="/WEB-INF/view/inc/mainMenu.jsp"></jsp:include>
+	
+	<div>
+		<div>오늘 접속자 : ${statsCount}</div>
+		<div>전체 접속자 : ${total}</div>
+	</div>
+	
 	<!-- 메뉴1 로그인/회원가입/내정보 -->
 	<!-- 장바구니(세션) -->
 	<!-- 캘린더(이번달에 나온 책들) -->

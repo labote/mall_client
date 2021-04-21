@@ -18,7 +18,9 @@ import mall.client.vo.Ebook;
 
 @WebServlet("/EbookCalendarController")
 public class EbookCalendarController extends HttpServlet {
+	
 	private EbookDao ebookDao; // 이 달의 신간 ebook을 불러오기 위해
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// 의존객체  생성

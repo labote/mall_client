@@ -14,6 +14,7 @@ import mall.client.vo.Ebook;
 
 @WebServlet("/EbookOneController")
 public class EbookOneController extends HttpServlet {
+	
 	private EbookDao ebookDao;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

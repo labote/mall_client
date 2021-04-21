@@ -14,7 +14,7 @@ import mall.client.vo.Orders;
 public class OrdersDao {
 	private DBUtil dbUtil;
 	
-	// 
+	// 베스트 셀러 리스트
 	public List<Map<String, Object>> selectBestOrdersList(){
 		// list, conn, stmt, rs 객체 생성 및 초기화
 		List<Map<String,Object>> list = new ArrayList<>(); // 다형성

@@ -14,10 +14,12 @@ import mall.client.vo.Client;
 
 @WebServlet("/InsertClientController")
 public class InsertClientController extends HttpServlet {
+	
 	private ClientDao clientDao;
 	
 	// form
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		HttpSession session = request.getSession();
 		if(session.getAttribute("loginClient") != null) {
 			response.sendRedirect(request.getContextPath()+"/IndexController");
@@ -28,6 +30,7 @@ public class InsertClientController extends HttpServlet {
 
 	// action : C -> M -> redirect(indexController)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		this.clientDao = new ClientDao();
 		
 		// 1. 이메일 중복 검사

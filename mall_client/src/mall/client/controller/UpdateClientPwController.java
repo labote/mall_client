@@ -21,6 +21,7 @@ public class UpdateClientPwController extends HttpServlet {
 
 	// form
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		// 로그인 유효성 검사, redirect
 		HttpSession session = request.getSession();
 		if(session.getAttribute("loginClient") == null) {

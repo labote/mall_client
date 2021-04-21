@@ -14,18 +14,25 @@ import javax.servlet.http.HttpServletResponse;
 import mall.client.model.CategoryDao;
 import mall.client.model.EbookDao;
 import mall.client.model.OrdersDao;
+import mall.client.model.StatsDao;
 import mall.client.vo.Ebook;
+import mall.client.vo.Stats;
 
 // C -> M -> V
 @WebServlet("/IndexController")
 public class IndexController extends HttpServlet {
+	
 	private EbookDao ebookDao;
 	private CategoryDao categoryDao;
 	private OrdersDao ordersDao;
+	private StatsDao statsDao;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// request 분석
+		
+		System.out.println("IndexController 시작");
+		
 		int currentPage = 1; // 현페 페이지
 		if(request.getParameter("currentPage") != null) { // 현재페이지를 받아온다.
 			currentPage = Integer.parseInt(request.getParameter("currentPage"));
@@ -65,6 +72,15 @@ public class IndexController extends HttpServlet {
 		System.out.println("totalRow : " + totalRow);
 		System.out.println("lastPage : " + lastPage);
 		
+		// 접속자 관련 데이터
+		this.statsDao = new StatsDao();
+		long total = this.statsDao.selectStatsTotal();
+		Stats stats = this.statsDao.selectStatsByToday();
+		long statsCount =0;
+		if(stats != null) {
+			statsCount = stats.getStatsCount();
+		}
+		
 		// View forward
 		request.setAttribute("ebookList", ebookList);
 		request.setAttribute("categoryNameList", categoryNameList);
@@ -75,6 +91,8 @@ public class IndexController extends HttpServlet {
 		request.setAttribute("searchTitle", searchTitle);
 		request.setAttribute("categoryName", categoryName);
 		request.setAttribute("lastPage", lastPage);
+		request.setAttribute("total", total);
+		request.setAttribute("statsCount", statsCount);
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/view/index.jsp");
 		rd.forward(request, response);
 	}
